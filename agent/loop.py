@@ -39,7 +39,9 @@ NOTES_HEADER = "Notes from earlier runs. Read them before you start:"
 #     That is: BASE_SYSTEM + "\n\n" + NOTES_HEADER + "\n" + notes.strip()
 #   This is long-term memory: the text of NOTES.md, put in front of the model at every start.
 def build_system_prompt(notes: str) -> str:
-    raise NotImplementedError("Part 3: write build_system_prompt in agent/loop.py")
+    if not notes or not notes.strip():
+        return BASE_SYSTEM
+    return BASE_SYSTEM + "\n\n" + NOTES_HEADER + "\n" + notes.strip()
 
 
 # run_agent(...) runs one attempt at the task and returns a RunResult.
@@ -94,4 +96,77 @@ def run_agent(
     notes: str = "",
     attempt: int = 1,
 ) -> RunResult:
-    raise NotImplementedError("Part 3: write run_agent in agent/loop.py")
+    system = build_system_prompt(notes)
+    history: list[dict[str, Any]] = [user_message(task)]
+    # Least privilege: never even offer a tool the policy would deny.
+    specs: list[ToolSpec] = [s for s in toolbox.specs() if gate_for(s.name, {})[0] != "deny"]
+
+    steps = 0
+    input_tokens = 0
+    output_tokens = 0
+    last_output: str | None = None
+    edits = 0
+
+    def stop(status: str, reason: str, final_text: str = "") -> RunResult:
+        trace.stop(attempt=attempt, step=steps, status=status, reason=reason, final_text=final_text,
+                   input_tokens=input_tokens, output_tokens=output_tokens)
+        return RunResult(status, reason, steps, input_tokens, output_tokens, final_text, history)
+
+    while True:
+        # 1. Stop rules are checked before every model call.
+        reason = budget_stop(steps, input_tokens + output_tokens, limits)
+        if reason:
+            return stop("budget", reason)
+
+        # 2. Think: one plain API call.
+        try:
+            turn = provider.next_turn(system, history, specs)
+        except AIError as error:
+            return stop("error", str(error))
+        steps += 1
+        input_tokens += turn.input_tokens
+        output_tokens += turn.output_tokens
+        history.append(turn.message)
+
+        # 3. No tool call means the model is finished.
+        if not turn.tool_calls:
+            return stop("done", "the model replied without a tool call", turn.text)
+
+        # 4. Act and observe, one call at a time, through the gates.
+        stuck = False
+        for call in turn.tool_calls:
+            decision, why = gate_for(call.name, call.args)
+            approved: bool | None = None
+            person_reason = ""
+            if decision == "deny":
+                ok, text = False, f"Refused by policy: {why}"
+            elif decision == "ask":
+                preview = toolbox.preview(call.name, call.args)
+                if preview is None:
+                    ok, text = toolbox.call(call.name, call.args)
+                else:
+                    approved, person_reason = approve(call, preview)
+                    if approved:
+                        ok, text = toolbox.call(call.name, call.args)
+                        person_reason = ""
+                    else:
+                        ok, text = False, f"A person rejected this {call.name} call. Reason: {person_reason}"
+            else:
+                ok, text = toolbox.call(call.name, call.args)
+
+            history.append(tool_result_message(call, text, ok))
+            trace.tool(attempt=attempt, step=steps, thought=turn.text, tool=call.name, input=call.args,
+                       gate=decision, approved=approved, reason=person_reason, ok=ok, output=text,
+                       input_tokens=turn.input_tokens, output_tokens=turn.output_tokens)
+
+            if ok and call.name == "edit_file":
+                edits += 1
+            if ok and call.name == "run_tests":
+                if is_stuck(last_output, text, edits):
+                    stuck = True
+                last_output = text
+                edits = 0
+
+        # 5. The same failure after an edit hands the run back to a person.
+        if stuck:
+            return stop("stuck", "the same tests failed the same way after an edit")
