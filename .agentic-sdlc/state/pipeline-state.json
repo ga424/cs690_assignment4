@@ -2,18 +2,18 @@
   "pipeline": {
     "id": "AISE-DELIVERY-0001",
     "release_id": "RELEASE-0001",
-    "status": "initialized",
-    "current_stage": "00-charter",
+    "status": "in_progress",
+    "current_stage": "05-implementation",
     "service": {
-      "name": "TBD",
-      "tier": "TBD",
-      "business_owner": "TBD",
-      "technical_owner": "TBD",
-      "data_classification": "TBD",
+      "name": "cs690-assignment4-coding-agent",
+      "tier": "Tier 4 (academic, no production)",
+      "business_owner": "ga424",
+      "technical_owner": "ga424",
+      "data_classification": "public / synthetic",
       "regulated_domains": [],
       "model_context_policy": "synthetic_or_redacted_only",
-      "mcp_access_policy": "disabled_until_approved",
-      "launch_scope": "TBD",
+      "mcp_access_policy": "a4-tools stdio server, project scope, owner-approved",
+      "launch_scope": "course submission",
       "operating_jurisdictions": [],
       "jurisdiction_regulatory_policy": "blocked_until_jurisdiction_overlay_reviewed",
       "jurisdiction_overlay_status": "pending",
@@ -29,15 +29,15 @@
       "code_change_traceability_status": "pending"
     },
     "repository": {
-      "url": "TBD",
-      "branch": "TBD",
-      "commit": "TBD"
+      "url": "https://github.com/ga424/cs690_assignment4",
+      "branch": "main",
+      "commit": "see git log"
     },
     "stage_status": [
       {
         "stage": "00-charter",
         "artifact": "artifacts/00-charter.md",
-        "status": "pending",
+        "status": "in_review",
         "required_evidence": [
           "business_intent",
           "scope",
@@ -86,13 +86,14 @@
         "evidence_ids": [],
         "approval": {
           "status": "pending",
-          "role": "product_owner_or_business_owner"
+          "role": "product_owner_or_business_owner",
+          "approver": "ga424"
         }
       },
       {
         "stage": "01-requirements",
         "artifact": "artifacts/01-requirements.md",
-        "status": "pending",
+        "status": "in_review",
         "required_evidence": [
           "measurable_acceptance_criteria",
           "stakeholder_coverage",
@@ -138,13 +139,14 @@
         "evidence_ids": [],
         "approval": {
           "status": "pending",
-          "role": "product_owner_or_ba"
+          "role": "product_owner_or_ba",
+          "approver": "ga424"
         }
       },
       {
         "stage": "02-design",
         "artifact": "artifacts/02-design.md",
-        "status": "pending",
+        "status": "in_review",
         "required_evidence": [
           "adr_records",
           "contracts",
@@ -194,13 +196,14 @@
         "evidence_ids": [],
         "approval": {
           "status": "pending",
-          "role": "architect"
+          "role": "architect",
+          "approver": "ga424"
         }
       },
       {
         "stage": "03-scaffold",
         "artifact": "artifacts/03-scaffold.md",
-        "status": "pending",
+        "status": "not_applicable",
         "required_evidence": [
           "buildable_skeleton",
           "stub_inventory",
@@ -241,13 +244,15 @@
         "evidence_ids": [],
         "approval": {
           "status": "pending",
-          "role": "lead_developer"
-        }
+          "role": "lead_developer",
+          "approver": "ga424"
+        },
+        "not_applicable_reason": "starter provides skeleton; no deployment, release = git push for grading"
       },
       {
         "stage": "04-test",
         "artifact": "artifacts/04-test.md",
-        "status": "pending",
+        "status": "complete",
         "required_evidence": [
           "requirement_to_test_index",
           "r1_r4_coverage",
@@ -288,16 +293,19 @@
           "protected_spec_test_change_authority",
           "specification_assurance_test_matrix"
         ],
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-0001"
+        ],
         "approval": {
           "status": "pending",
-          "role": "qa_lead"
+          "role": "qa_lead",
+          "approver": "ga424"
         }
       },
       {
         "stage": "05-implementation",
         "artifact": "artifacts/05-implementation.md",
-        "status": "pending",
+        "status": "in_progress",
         "required_evidence": [
           "passing_tests",
           "test_integrity_proof",
@@ -344,16 +352,22 @@
           "invariant_preservation_evidence",
           "code_change_ledger_records"
         ],
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-0002",
+          "EV-0003",
+          "EV-0004",
+          "EV-0005"
+        ],
         "approval": {
           "status": "pending",
-          "role": "lead_developer"
+          "role": "lead_developer",
+          "approver": "ga424"
         }
       },
       {
         "stage": "06-deployment",
         "artifact": "artifacts/06-deployment.md",
-        "status": "pending",
+        "status": "not_applicable",
         "required_evidence": [
           "artifact_digest",
           "deployment_id",
@@ -393,8 +407,10 @@
         "evidence_ids": [],
         "approval": {
           "status": "pending",
-          "role": "platform_or_sre"
-        }
+          "role": "platform_or_sre",
+          "approver": "ga424"
+        },
+        "not_applicable_reason": "starter provides skeleton; no deployment, release = git push for grading"
       },
       {
         "stage": "07-review",
@@ -473,7 +489,8 @@
         "evidence_ids": [],
         "approval": {
           "status": "pending",
-          "role": "release_or_risk_authority"
+          "role": "release_or_risk_authority",
+          "approver": "ga424"
         }
       }
     ],
@@ -598,7 +615,9 @@
       "code_change_traceability_management": "pending"
     },
     "open_questions": [],
-    "blockers": [],
-    "last_updated": "TBD"
+    "blockers": [
+      "RISK-0001: owner-only runs, Part 7 session, report and ledger experiment entries"
+    ],
+    "last_updated": "2026-11-03T23:59:00+00:00"
   }
 }
