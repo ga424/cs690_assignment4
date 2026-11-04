@@ -12,7 +12,7 @@ Run `python -m agent summary` and paste its table here exactly as printed.
 
 | Run | Tools | Judge | Stopped (per attempt) | Model calls | Tool calls | Input tokens | Output tokens | Cost | Judge verdict |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| runA | local | after | 1: done | 5 | 7 | 8021 | 461 | $0.0010 | 1: PASS |
+| runA | local | after | 1: done | 7 | 8 | 12575 | 612 | $0.0016 | 1: FAIL |
 | runB | mcp | reflexion | 1: done | 5 | 7 | 8177 | 469 | $0.0011 | 1: PASS |
 | try1 | local | after | 1: done | 5 | 7 | 8032 | 463 | $0.0010 | 1: PASS |
 
@@ -21,7 +21,7 @@ Run `python -m agent summary` and paste its table here exactly as printed.
 Which step proposed the edit you rejected, and what was your reason? What did the agent
 do next, and at which step? Did it follow your reason?
 
-No edit was rejected in runA, so this requirement was not met. The only edit was proposed at attempt 1, step 3, and it was approved (`approved: true`, empty reason). The handout required rejecting it with a reason. The agent went on to `run_tests` at attempt 1, step 4, which passed 4 of 4. With no rejection, the trace shows nothing about whether the agent follows a reason.
+I rejected the edit proposed at attempt 1, step 4. My reason was "I do not agree with the recommended agent solution and next step". At attempt 1, step 5 the agent proposed a smaller edit: case normalization only, without the expiry check. It followed the reason as far as it could, but the reason named no specific problem, so it guessed. It treated the rejection as a problem with the size of the "combined edit" and dropped correct code.
 
 ## 3. The visible tests and the judge (Run A, at most 120 words)
 
@@ -29,7 +29,7 @@ What did the last `run_tests` in runA report, and what did the judge say after t
 If the judge failed, which rule in `spec.md` did the code break, at which step did the
 agent stop, and why did it stop there?
 
-The last `run_tests` (attempt 1, step 4) reported "PASSED: 4 of 4 tests passed." The judge then reported "PASSED: 6 of 6 tests passed." The judge passed, so no rule was broken. The visible tests do not cover expiry, but the step 3 edit added the check anyway, because the agent had read `spec.md` at step 2.
+The last `run_tests` (attempt 1, step 6) reported "PASSED: 4 of 4 tests passed." The judge reported "FAILED: 1 of 6 tests did not pass", on `test_rule_4_code_is_rejected_after_its_last_day`. The code broke rule 4: a code must raise `ValueError` after its last day. The agent stopped at attempt 1, step 7 by replying without a tool call, because the visible tests passed and none of them covers expiry. It never saw the judge.
 
 ## 4. The lessons (Run B, at most 150 words)
 
@@ -44,7 +44,7 @@ runB wrote no lessons, and `NOTES.md` is empty, so there is nothing to quote or 
 Give `input_tokens` from the first and the last tool event in `runs/runA/trace.jsonl`,
 with their step numbers. Why does the number grow from step to step?
 
-First tool event: 811 `input_tokens` at attempt 1, step 1. Last: 2175 at attempt 1, step 4. It grows because every model call resends the whole conversation, including all earlier tool calls and results.
+First tool event: 811 `input_tokens` at attempt 1, step 1. Last: 2375 at attempt 1, step 6. It grows because every model call resends the whole conversation, including all earlier tool calls and results.
 
 ## 6. MCP (at most 120 words)
 
@@ -76,4 +76,4 @@ runA, where your own agent had the same task on the same project. Then name one 
 could control in your own agent that the fixer file could not set, and one thing that was
 easier with the vendor's agent.
 
-The fixer added `code = code.upper()`. `judge vendor` reported visible tests 4 of 4 passed, but the judge failed 1 of 6: `test_rule_4_code_is_rejected_after_its_last_day`. It changed nothing in `tests/`. runA also passed 4 of 4 but passed the judge 6 of 6, because its edit added the expiry check. The fixer noticed that bug and left it, following "smallest change". In my agent I controlled the step and token budgets, which the fixer file could not set. The vendor's agent needed only a short file, not a loop. It ran headless with pre-approved permissions.
+The fixer added `code = code.upper()`. `judge vendor` reported visible tests 4 of 4 passed, but the judge failed 1 of 6: `test_rule_4_code_is_rejected_after_its_last_day`. It changed nothing in `tests/`. runA ended the same way: 4 of 4 visible, the same judge failure. runA proposed the expiry check at step 4 but dropped it after my rejection; the fixer noticed the bug and left it as outside "smallest change". In my agent I controlled the step and token budgets, which the fixer file could not set. The vendor's agent needed only a short file, not a loop. It ran headless with pre-approved permissions.

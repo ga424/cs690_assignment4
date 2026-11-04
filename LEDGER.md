@@ -141,23 +141,31 @@ evidence:  REQ-016, ADR-007; HANDOUT Part 7
 risk:      the reviewer's tools line is a lock only in Claude Code
 
 ## Entry 8
-artifact:  runs/runA, recorded at commit bfefbe7 (experiment)
+artifact:  runs/runA, re-recorded at commit b4d6db6 (experiment)
 tool:      my agent, provider openai, model gpt-5.6-luna, 2026-11-03
-prompts:   none typed to an AI tool; task "Make the tests pass."; no rejection reason
-           was given
-review:    from the trace: read files at step 2, one edit at step 3, tests at step 4.
-           The step 3 edit was approved with an empty reason, so the handout's rule to
-           reject the first edit was not followed. The trace was not changed.
-           TODO(Gus): what you read before approving, and the instructor's answer
-           on re-recording
-checks:    python -m agent check-trace runA: complete, 9 events, 7 tool calls;
+prompts:   task "Make the tests pass."; my rejection reason;
+           prompts/runA-rejection.md
+review:    the first recording (commit 0f4d63a) approved the first edit at step 3
+           instead of rejecting it, which did not follow HANDOUT Part 6. Its judge
+           result was 6 of 6. I re-recorded once with --overwrite to follow that step,
+           not to get a better result, and I keep this run although its judge failed.
+           The original stays in Git history; no trace was edited. The handout's
+           "record once" rule does not clearly allow this re-record.
+           TODO(Gus): the instructor's answer, or that you did not ask.
+           From the trace: step 4 edit rejected with my reason; step 5 was a smaller
+           edit with no expiry check, approved; step 6 tests passed. My reason named no
+           specific problem, and the agent dropped correct code.
+           TODO(Gus): what you read before approving step 5
+checks:    python -m agent check-trace runA: complete, 10 events, 8 tool calls;
            python -m agent replay runA: matches its trace
 evidence:  HANDOUT Part 6; RUBRIC B1, B2, B3
-risk:      the agent's handling of a rejection is untested with a real model here
-dataset:   task "Make the tests pass." on fixture/, hash 8aaab9373de615a5, commit bfefbe7
-result:    N=1: stopped done, 5 model calls, 7 tool calls, 8021 in and 461 out tokens,
-           $0.0010; visible 4 of 4; judge 6 of 6 (runs/runA/trace.jsonl)
-changed:   no agent code changed. TODO(Gus): what you did differently as a result
+risk:      rule 4 is still broken in runs/runA/workspace; no visible test covers it
+dataset:   task "Make the tests pass." on fixture/, hash 8aaab9373de615a5, commit b4d6db6
+result:    N=1: stopped done, 7 model calls, 8 tool calls, 12575 in and 612 out tokens,
+           $0.0016; visible 4 of 4; judge FAILED 1 of 6,
+           test_rule_4_code_is_rejected_after_its_last_day (runs/runA/trace.jsonl)
+changed:   no agent code changed; re-recorded once to include the required rejection.
+           TODO(Gus): what you would do differently as a result
 
 ## Entry 9
 artifact:  runs/runB, recorded at commit bfefbe7 (experiment)

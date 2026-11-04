@@ -12,6 +12,16 @@ My prompts in this session, verbatim, used for ledger entries 1 and 11:
 
     Please check and complete for me.
 
+    what am I asking about runA
+
+    Help me redo it and explain in my ledger
+
+    yes, let's continue
+
+    what is the Add a comment that names the spec rule you are following.
+
+    runA is now completed
+
 Sent by that session to headless Claude Code for Part 7, verbatim:
 
     Use the a4-tools MCP server: call its run_tests tool, then its read_file tool on discounts.py, and tell me why the failing test fails. Do not change any files.
