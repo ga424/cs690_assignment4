@@ -21,7 +21,7 @@ Run `python -m agent summary` and paste its table here exactly as printed.
 Which step proposed the edit you rejected, and what was your reason? What did the agent
 do next, and at which step? Did it follow your reason?
 
-I rejected the edit proposed at attempt 1, step 4. My reason was "I do not agree with the recommended agent solution and next step". At attempt 1, step 5 the agent proposed a smaller edit: case normalization only, without the expiry check. It followed the reason as far as it could, but the reason named no specific problem, so it guessed. It treated the rejection as a problem with the size of the "combined edit" and dropped correct code.
+I rejected the edit proposed at attempt 1, step 4. My reason was "I do not agree with the recommended agent solution and next step". At attempt 1, step 5 the agent proposed a smaller edit: case normalization only, without the expiry check. It followed the reason as far as it could, but the reason named no specific problem, so it guessed. It treated the rejection as a problem with the size of the "combined edit" and dropped correct code. This is a re-recording; ledger entry 8 explains why.
 
 ## 3. The visible tests and the judge (Run A, at most 120 words)
 

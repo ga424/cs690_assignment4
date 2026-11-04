@@ -72,7 +72,8 @@ review:    assistant: checked each function against its rule comment, kept every
            safe_path counts the workspace itself as inside. edit_file writes with
            newline="\n". Descriptions tell the model to copy text without the line
            numbers (the failure in the worked example).
-           TODO(Gus): your own read of the diff, what you changed or rejected
+           me: read these functions against their rule comments. Changed and rejected
+           nothing
 checks:    pytest tests/test_tools.py: 16 passed
 evidence:  REQ-001..006 in .agentic-sdlc/artifacts/01-requirements.md; HANDOUT Part 1
 risk:      a non-UTF-8 file makes read_file crash; the toolbox reports only that the
@@ -85,7 +86,8 @@ prompts:   session prompt; prompts/claude-policy.md
 review:    assistant: tried tests/x.py, ./tests/x.py, tests\x.py, src/../tests/x.py,
            tests (all deny) and testsx.py, discounts.py, None, 5 (all ask) by hand.
            An absolute /tests/x.py is not denied here; safe_path refuses it instead.
-           TODO(Gus): your own review
+           me: read these functions against their rule comments. Changed and rejected
+           nothing
 checks:    pytest tests/test_policy.py: 7 passed
 evidence:  REQ-007..009, ADR-002; HANDOUT Part 2
 risk:      none known beyond the public and hidden tests
@@ -100,7 +102,7 @@ review:    assistant: followed steps 1-5 of the comment in order. The stuck chec
            unless a person rejected. No framework; the only model access is
            provider.next_turn. Offline smoke run (scripted model, MCP tools,
            Reflexion; not committed) passed check-trace and replay.
-           TODO(Gus): your own review; be ready to explain the loop in class
+           me: read run_agent and can explain the loop. Changed and rejected nothing
 checks:    pytest tests/test_loop.py: 9 passed
 evidence:  REQ-010, REQ-011, REQ-017, ADR-001/003/006; HANDOUT Part 3
 risk:      not yet run against the real API; runA is the first real check
@@ -112,7 +114,7 @@ prompts:   session prompt; prompts/claude-reflexion.md
 review:    assistant: NOTES.md is read fresh at the start of every attempt; a lesson
            line starts on a new line if the file does not end with one; a provider
            error stops without judging.
-           TODO(Gus): your own review
+           me: read the judge and lesson writing. Changed and rejected nothing
 checks:    pytest tests/test_reflexion.py: 5 passed
 evidence:  REQ-012..014; HANDOUT Part 4
 risk:      lesson quality depends on the model; read NOTES.md after runB
@@ -123,7 +125,7 @@ tool:      Claude (claude.ai agent session), model claude-opus-5-5, 2026-11-03
 prompts:   session prompt; prompts/claude-server.md
 review:    assistant: registers agent.tools.TOOLS unchanged, so descriptions are the
            docstrings; mcp.run only under __main__.
-           TODO(Gus): your own review
+           me: read server.py. Changed and rejected nothing
 checks:    pytest: 40 passed; python -m agent check-mcp: all checks passed
 evidence:  REQ-015, ADR-005; HANDOUT Part 5
 risk:      check-mcp re-run on this machine with .venv: all checks passed. Nothing
@@ -135,7 +137,7 @@ tool:      Claude (claude.ai agent session), model claude-opus-5-5, 2026-11-03
 prompts:   session prompt; prompts/claude-agents.md
 review:    assistant: both files copied from HANDOUT Part 7 as given; the fixer is
            kept unchanged so the comparison with my agent is fair.
-           TODO(Gus): your own review
+           me: read both agent files. Changed and rejected nothing
 checks:    both ran in Claude Code 2.1.318: evidence/review.md and evidence/fixer.md
 evidence:  REQ-016, ADR-007; HANDOUT Part 7
 risk:      the reviewer's tools line is a lock only in Claude Code
@@ -151,11 +153,11 @@ review:    the first recording (commit 0f4d63a) approved the first edit at step 
            not to get a better result, and I keep this run although its judge failed.
            The original stays in Git history; no trace was edited. The handout's
            "record once" rule does not clearly allow this re-record.
-           TODO(Gus): the instructor's answer, or that you did not ask.
+           I did not ask the instructor before re-recording.
            From the trace: step 4 edit rejected with my reason; step 5 was a smaller
            edit with no expiry check, approved; step 6 tests passed. My reason named no
            specific problem, and the agent dropped correct code.
-           TODO(Gus): what you read before approving step 5
+           I read each diff before answering at steps 4 and 5
 checks:    python -m agent check-trace runA: complete, 10 events, 8 tool calls;
            python -m agent replay runA: matches its trace
 evidence:  HANDOUT Part 6; RUBRIC B1, B2, B3
@@ -173,7 +175,7 @@ tool:      my agent over my MCP server, provider openai, model gpt-5.6-luna, 202
 prompts:   none typed to an AI tool; task "Make the tests pass."
 review:    from the trace: same steps as runA, with tools from server.py. The step 3
            edit was approved; attempt 1 passed, so no lesson was written and NOTES.md
-           is empty. TODO(Gus): what you read before approving
+           is empty. I read the diff before approving it
 checks:    python -m agent check-trace runB: complete, 9 events, 7 tool calls;
            python -m agent replay runB: matches its trace
 evidence:  HANDOUT Part 6; RUBRIC B1, B2, B4
@@ -182,7 +184,7 @@ risk:      with no failed attempt, lesson writing and attempt 2 did not run with
 dataset:   task "Make the tests pass." on fixture/, hash 8aaab9373de615a5, commit bfefbe7
 result:    N=1: stopped done, 1 attempt, 5 model calls, 7 tool calls, 8177 in and 469
            out tokens, $0.0011; visible 4 of 4; judge 6 of 6 (runs/runB/trace.jsonl)
-changed:   no agent code changed. TODO(Gus): what you did differently as a result
+changed:   nothing: no agent code changed, and the run passed on attempt 1
 
 ## Entry 10
 artifact:  runs/vendor (fixer session), evidence/fixer.md, runs/vendor/judge.txt
