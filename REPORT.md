@@ -1,7 +1,7 @@
 # Assignment 4 Report
 
 Name: Gustavo Abreu
-Commit graded: TODO(Gus): the final commit SHA
+Commit graded: 31e7f7c
 
 Answer from your own traces. Give step numbers as `attempt 1, step 4`. Keep to the word
 limits; a short answer with the right evidence earns full points.
