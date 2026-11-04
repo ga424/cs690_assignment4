@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "a4-tools": {
+      "type": "stdio",
+      "command": "/Users/gustavoabreu/njit/cs690/cs690_assignment4/.venv/bin/python",
+      "args": [
+        "/Users/gustavoabreu/njit/cs690/cs690_assignment4/server.py",
+        "--workspace",
+        "runs/terminal/workspace"
+      ],
+      "env": {}
+    }
+  }
+}
