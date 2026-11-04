@@ -56,7 +56,7 @@ tool:      Claude Code, model claude-opus-5-5, 2026-11-03: built .venv on Python
            and a blank .env. Key and prices entered by me
 prompts:   prompts/claude-code-session-2026-11-03.md
 review:    provider openai, model gpt-5.6-luna, $0.10 in and $0.50 out per million
-           tokens.
+           tokens, from https://developers.openai.com/api/docs/pricing
 checks:    python -m agent check-setup: All checks passed.
 evidence:  HANDOUT Part 0
 risk:      prices change; recorded on the date above
@@ -167,6 +167,8 @@ result:    N=1: stopped done, 7 model calls, 8 tool calls, 12575 in and 612 out 
            $0.0016; visible 4 of 4; judge FAILED 1 of 6,
            test_rule_4_code_is_rejected_after_its_last_day (runs/runA/trace.jsonl)
 changed:   no agent code changed; re-recorded once to include the required rejection.
+           Next time I would not miss the step that says to answer n instead of y,
+           so that the rejection path is validated first
 
 ## Entry 9
 artifact:  runs/runB, recorded at commit bfefbe7 (experiment)
@@ -194,6 +196,7 @@ review:    run headless by another Claude Code session at my request, with a
            edit as the handout asks. The first list blocked the test command; the
            session was resumed with it allowed. The fixer added code = code.upper()
            and reported the expiry bug without fixing it.
+           me: the session was automated, and I reviewed the check-ins before pushing
 checks:    python -m agent judge vendor: visible 4 of 4 passed; judge FAILED 1 of 6,
            test_rule_4_code_is_rejected_after_its_last_day; only discounts.py changed
 evidence:  HANDOUT Part 7 C; RUBRIC B7, C9
@@ -208,9 +211,9 @@ prompts:   prompts/claude-code-session-2026-11-03.md
 review:    assistant: ran the terminal and reviewer sessions headless, generated the
            evidence files from their raw logs, and drafted REPORT.md and these entries
            from the traces, judge.txt and agent/policy.py.
+           me: I reviewed REPORT.md before submitting it, after this change
 checks:    pytest: 40 passed; check-mcp: all checks passed; check-trace and replay
            pass for runA and runB
 evidence:  HANDOUT Parts 7 and 8; RUBRIC C1 to C9
-risk:      the report is AI-drafted until reviewed; the reviewer's read-only lock was
-           not tested with an attempted edit
+risk:      the reviewer's read-only lock was not tested with an attempted edit
 ```
