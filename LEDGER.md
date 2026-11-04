@@ -52,10 +52,12 @@ changed:   wrote "copy it without the line numbers" into the read_file and edit_
 ```
 ## Entry 1
 artifact:  Part 0 setup: .env prices and check-setup
-tool:      none (manual)
-prompts:   none
-review:    TODO(Gus): provider, model, the two prices, and the pricing page URL
-checks:    TODO(Gus): python -m agent check-setup -> "All checks passed."
+tool:      Claude Code, model claude-opus-5-5, 2026-11-03: built .venv on Python 3.12
+           and a blank .env. Key and prices entered by me
+prompts:   prompts/claude-code-session-2026-11-03.md
+review:    provider openai, model gpt-5.6-luna, $0.10 in and $0.50 out per million
+           tokens. TODO(Gus): the pricing page URL you found them on
+checks:    python -m agent check-setup: All checks passed.
 evidence:  HANDOUT Part 0
 risk:      prices change; recorded on the date above
 
@@ -124,7 +126,8 @@ review:    assistant: registers agent.tools.TOOLS unchanged, so descriptions are
            TODO(Gus): your own review
 checks:    pytest: 40 passed; python -m agent check-mcp: all checks passed
 evidence:  REQ-015, ADR-005; HANDOUT Part 5
-risk:      TODO(Gus): re-run check-mcp on your machine
+risk:      check-mcp re-run on this machine with .venv: all checks passed. Nothing
+           beyond the public and hidden tests is known
 
 ## Entry 7
 artifact:  .claude/agents/reviewer.md and .claude/agents/fixer.md at commit 54fc3d8
@@ -133,15 +136,74 @@ prompts:   session prompt; prompts/claude-agents.md
 review:    assistant: both files copied from HANDOUT Part 7 as given; the fixer is
            kept unchanged so the comparison with my agent is fair.
            TODO(Gus): your own review
-checks:    TODO(Gus): /agents in Claude Code lists reviewer and fixer
+checks:    both ran in Claude Code 2.1.318: evidence/review.md and evidence/fixer.md
 evidence:  REQ-016, ADR-007; HANDOUT Part 7
 risk:      the reviewer's tools line is a lock only in Claude Code
-```
 
-<!--
-TODO(Gus): add, in order, once each is done and written from its own files:
-  Entry 8  runA experiment (from runs/runA/trace.jsonl): dataset, result, changed
-  Entry 9  runB experiment (from runs/runB/trace.jsonl and NOTES.md)
-  Entry 10 fixer session in Claude Code (from evidence/fixer.md, runs/vendor/judge.txt)
-  Save each prompt you type (e.g. the runA rejection reason, the Part 7 prompts) in prompts/.
--->
+## Entry 8
+artifact:  runs/runA, recorded at commit bfefbe7 (experiment)
+tool:      my agent, provider openai, model gpt-5.6-luna, 2026-11-03
+prompts:   none typed to an AI tool; task "Make the tests pass."; no rejection reason
+           was given
+review:    from the trace: read files at step 2, one edit at step 3, tests at step 4.
+           The step 3 edit was approved with an empty reason, so the handout's rule to
+           reject the first edit was not followed. The trace was not changed.
+           TODO(Gus): what you read before approving, and the instructor's answer
+           on re-recording
+checks:    python -m agent check-trace runA: complete, 9 events, 7 tool calls;
+           python -m agent replay runA: matches its trace
+evidence:  HANDOUT Part 6; RUBRIC B1, B2, B3
+risk:      the agent's handling of a rejection is untested with a real model here
+dataset:   task "Make the tests pass." on fixture/, hash 8aaab9373de615a5, commit bfefbe7
+result:    N=1: stopped done, 5 model calls, 7 tool calls, 8021 in and 461 out tokens,
+           $0.0010; visible 4 of 4; judge 6 of 6 (runs/runA/trace.jsonl)
+changed:   no agent code changed. TODO(Gus): what you did differently as a result
+
+## Entry 9
+artifact:  runs/runB, recorded at commit bfefbe7 (experiment)
+tool:      my agent over my MCP server, provider openai, model gpt-5.6-luna, 2026-11-03
+prompts:   none typed to an AI tool; task "Make the tests pass."
+review:    from the trace: same steps as runA, with tools from server.py. The step 3
+           edit was approved; attempt 1 passed, so no lesson was written and NOTES.md
+           is empty. TODO(Gus): what you read before approving
+checks:    python -m agent check-trace runB: complete, 9 events, 7 tool calls;
+           python -m agent replay runB: matches its trace
+evidence:  HANDOUT Part 6; RUBRIC B1, B2, B4
+risk:      with no failed attempt, lesson writing and attempt 2 did not run with a
+           real model
+dataset:   task "Make the tests pass." on fixture/, hash 8aaab9373de615a5, commit bfefbe7
+result:    N=1: stopped done, 1 attempt, 5 model calls, 7 tool calls, 8177 in and 469
+           out tokens, $0.0011; visible 4 of 4; judge 6 of 6 (runs/runB/trace.jsonl)
+changed:   no agent code changed. TODO(Gus): what you did differently as a result
+
+## Entry 10
+artifact:  runs/vendor (fixer session), evidence/fixer.md, runs/vendor/judge.txt
+tool:      Claude Code 2.1.318, model claude-opus-5-5, 2026-11-03
+prompts:   fixer task and the resume message; prompts/claude-fixer.md
+review:    run headless by another Claude Code session at my request, with a
+           pre-approved tool list instead of live prompts, so no person approved each
+           edit as the handout asks. The first list blocked the test command; the
+           session was resumed with it allowed. The fixer added code = code.upper()
+           and reported the expiry bug without fixing it.
+           TODO(Gus): your own read of the diff and evidence/fixer.md
+checks:    python -m agent judge vendor: visible 4 of 4 passed; judge FAILED 1 of 6,
+           test_rule_4_code_is_rejected_after_its_last_day; only discounts.py changed
+evidence:  HANDOUT Part 7 C; RUBRIC B7, C9
+risk:      rule 4 is still broken in runs/vendor/workspace, left that way on purpose
+           so the comparison stays fair
+
+## Entry 11
+artifact:  evidence/terminal_mcp.md, evidence/review.md, REPORT.md draft, .mcp.json
+           check, and ledger entries 8 to 11
+tool:      Claude Code, model claude-opus-5-5, 2026-11-03
+prompts:   prompts/claude-code-session-2026-11-03.md
+review:    assistant: ran the terminal and reviewer sessions headless, generated the
+           evidence files from their raw logs, and drafted REPORT.md and these entries
+           from the traces, judge.txt and agent/policy.py.
+           TODO(Gus): your own read of REPORT.md, and what you changed
+checks:    pytest: 40 passed; check-mcp: all checks passed; check-trace and replay
+           pass for runA and runB
+evidence:  HANDOUT Parts 7 and 8; RUBRIC C1 to C9
+risk:      the report is AI-drafted until reviewed; the reviewer's read-only lock was
+           not tested with an attempted edit
+```
