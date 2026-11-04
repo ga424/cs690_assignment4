@@ -17,7 +17,5 @@ def apply_discount(total_cents: int, code: str, today: date) -> int:
     if normalized_code not in CODES:
         raise ValueError(f"unknown code: {code}")
     percent, last_day = CODES[normalized_code]
-    if today > last_day:
-        raise ValueError(f"expired code: {code}")
     discount = total_cents * percent // 100
     return total_cents - discount
